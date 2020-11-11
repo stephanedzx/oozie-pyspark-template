@@ -1,0 +1,40 @@
+<workflow-app name="Template_WF_stephanedzx" xmlns="uri:oozie:workflow:0.5">
+    <start to="action_1"/>
+
+    <kill name="kill">
+        <message>
+            Action failed, error message : message[${wf:errorMessage(wf:lastErrorNode())}]
+        </message>
+    </kill>
+
+    <action name="send_email">
+        <email xmlns="uri:oozie:email-action:0.1">
+            <to>test@test.com,test8@test.com</to>
+            <cc>test2@test.com</cc>
+            <subject>Subject</subject>
+            <body>
+                First line of email.
+                Lorem ipsum...
+                Workflow ID : {$wf:id()}
+                Error message : ${wf:errorMessage(wf:lastErrorNode())}
+                Current date : ${current_date}
+                External ID of action 1 : ${wf:actionExternalId('spark_job_1')}
+            </body>
+        </email>
+        <ok to="kill"/>
+        <error to="kill"/>
+    </action>
+
+    <action name="execute_bash_script">
+        <shell xmlns="uri:oozie:shekk-action:0.1">
+            <job-tracker>${job_tracker}</job-tracker>
+        </shell>
+        <ok to="send_email"/>
+        <error to="send_email"/>
+    </action>
+
+    <action name="action_1">
+    </action>
+
+    <end name="end"/>
+</workflow-app>

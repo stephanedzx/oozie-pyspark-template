@@ -1,0 +1,27 @@
+<coordinator-app name="Template_coordinator_stephanedzx"
+                 frequency="${coord:days(2)}"
+                 start="${start_date}"
+                 end="${end_date}"
+                 timezone="${timezone}"
+                 xmlns="uri:oozie:coordinator:0.5">
+
+<controls>
+    <timeout>${timeout}</timeout>
+    <concurrency>${concurrency}</concurrency>
+    <execution>${execution}</execution>
+    <throttle>${throttle}</throttle>
+</controls>
+
+<action>
+    <workflow>
+        <app-path>${application_path}</app-path>
+        <configuration> 
+            <property>
+                <name>current_date</name>
+                <value>${coord:formatTime(coord:dateOffset(coord:nominalTime(), 0, "DAY"), "yyyy-MM-dd")}</value>
+            </property>
+        </configuration>
+    </workflow>
+</action>
+
+</coordinator-app>

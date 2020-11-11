@@ -1,0 +1,13 @@
+timeout : how long the coordinator action will be in WAITING or READY status before giving up on its execution, default -1
+concurrency : How many coordinator actions are allowed to run concurrently (RUNNING status) before the coordinator engine starts throttling them, default 1
+execution : Strategy when there is a backlog of coordinator actions in the coordinator engine. FIFO (default), LIFO, ONLYLAST
+throttle : How many maximum coordinator actions are allowed to be in WAITING state concurrently, default 
+
+
+In coordinator.xml, "current_date" value is set and given as parameter to the workflow.
+
+
+HDFS hostname is found ...
+jobTracker is found ...
+nameNode is found ...
+
