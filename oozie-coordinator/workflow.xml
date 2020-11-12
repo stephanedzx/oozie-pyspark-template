@@ -1,5 +1,5 @@
 <workflow-app name="Template_WF_stephanedzx" xmlns="uri:oozie:workflow:0.5">
-    <start to="action_1"/>
+    <start to="delete_stuff"/>
 
     <kill name="kill">
         <message>
@@ -28,12 +28,54 @@
     <action name="execute_bash_script">
         <shell xmlns="uri:oozie:shekk-action:0.1">
             <job-tracker>${job_tracker}</job-tracker>
+            <name-node>${name_node}</name-node>
+            <configuration>
+                <property>
+                    <name>oozie.launcher.mapred.job.queue.name</name>
+                    <value>${launcher_queue}</value>
+                </property>
+            </configuration>
+
+            <exec>template_script.sh</exec>
+            <argument>${script_logs_dest}</argument>
+            <argument>${wf:errorMessage(wf:lastErrorNode())}</argument>
+            <argument>${current_date}</argument>
+            <file>${application_path}/lib/template_script.sh</file>
         </shell>
         <ok to="send_email"/>
         <error to="send_email"/>
     </action>
 
-    <action name="action_1">
+    <action name="delete_stuff">
+        <fs>
+            <delete path="hdfs://<hostname>:8020/<path>/*"/>
+        </fs>
+        <ok to="spark_action"/>
+        <error to="send_email"/>
+    </action>
+
+    <action name="spark_action">
+        <spark xmlns="uri:oozie:spark-action:0.1">
+            <job-tracker>${job_tracker}</job-tracker>
+            <name-node>${name_node}</name-node>
+            <configuration>
+                <property>
+                    <name>oozie.launcher.mapred.job.queue.name</name>
+                    <value>${launcher_queue}</value>
+                </property>
+            </configuration>
+
+            <master>yarn</master>
+            <mode>cluster</mode>
+            <name>Spark application's name</name>
+            <jar>${application_path}/lib/pyspark_script.py</jar>
+            <spark-opts>--driver-memory 16g --executor-memory 4g --executor-cores 2 --num-executors=8 --conf spark.driver.maxResultSize=12g --conf spark.executor.memoryOverhead=4g --queue=${queue_name} --conf spark.yarn.maxAppAttempts=1 --conf spark.yarn.appMasterEnv.PYSPARK_PYTHON=./ARCHIVE/env/bin/python --conf spark.yarn.executorEnv.PYSPARK_PYTHON=./ARCHIVE/env/bin/python --jars hdfs://<hostname>:8020/<path>/spark-avro_2.11-4.0.0.jar,hdfs://<hostname>:8020/<path>/spark-csv_2.10-1.5.0.jar,hdfs://<hostname>:8020/<path>/common-csv-1.1.jar --files <path>/useful_file.json --archives hdfs://<hostname>:8020/<path>/env.tar.gz#ARCHIVE</spark-opts>
+            <arg>${argument_1}</arg>
+            <arg>${argument_2}</arg>
+            <arg>${argument_3}</arg>
+        </spark>
+        <ok to="end"/>
+        <error to="execute_bash_script"/>
     </action>
 
     <end name="end"/>
