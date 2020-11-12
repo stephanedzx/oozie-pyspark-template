@@ -12,7 +12,7 @@ import pyspark.sql.functions as F
 spark = SparkSession.builder.appName("App name").getOrCreate()
 # Add directory or file to path
 spark.sparkContext.addFile("hdfs://<hostname>:8020/<path>/dir", recursive=True)
-spark.sparkContext.addPyFile("hdfs://<hostname>:8020/<path>/file1")
+spark.sparkContext.addPyFile("hdfs://<hostname>:8020/<path>/file1.py")
 # Import stuff from this path
 import dir.module1 as m
 import file1
