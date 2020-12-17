@@ -18,8 +18,8 @@ WAITING state concurrently, default<br>
 In coordinator.xml, "current_date" value is set and given as parameter to the workflow.
 
 ## About job.properties 
-**HDFS hostname** is found in "core-site.xml" > property "fs.defaultFS".<br>
+**HDFS hostname** is found in "oozie-default.xml" > property "fs.defaultFS".<br>
 
-**job tracker** is found in "core-site.xml" > property "yarn.resourcemanager.address.rm2".<br>
+**job tracker** is found in "oozie-default.xml" > property "yarn.resourcemanager.address.rm2".<br>
 
-"core-site.xml" is found in Hadoop "conf/" directory, e.g. /etc/hadoop/conf/core-site.xml<br>
+"oozie-default.xml" is found in Hadoop "conf/" directory, e.g. /etc/hadoop/conf/oozie-default.xml<br>
